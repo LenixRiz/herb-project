@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Default Local Group
+  m_GUID: a6a9254c2d924a843be2724b2caf50cc
+  m_SerializeEntries:
+  - m_GUID: 3b6f73d5379da034f854c2ca3af4aa92
+    m_Address: Assets/_Project/Visuals/Sprites/Customers/lumine.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a064c1a5e00964c429f30b987a4ebf07
+    m_Address: Assets/_Project/Visuals/Sprites/Customers/mika.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba40c5a7fe658ba4b920860da4fdcb9d
+    m_Address: Assets/_Project/Visuals/Sprites/Customers/stelle.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3b709a4fcb38fa1438a35a5dbfb9de3e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1a4f36c9e3565204097b305dbd8d780a, type: 2}
+    - {fileID: 11400000, guid: 859a8c7ee78b2cb4aa55bfd2bcaae9b2, type: 2}

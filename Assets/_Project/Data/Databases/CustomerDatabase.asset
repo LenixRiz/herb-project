@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62fae0c47923129478cd32370611af1d, type: 3}
+  m_Name: CustomerDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::CustomerDatabaseSO
+  _allCustomers:
+  - {fileID: 11400000, guid: b55f16210fdfdb348b121871f3462764, type: 2}
+  - {fileID: 11400000, guid: 54561b11973601d41b791a487b58be37, type: 2}
+  - {fileID: 11400000, guid: 938c97774d35b51468a1f86f8d038b2a, type: 2}

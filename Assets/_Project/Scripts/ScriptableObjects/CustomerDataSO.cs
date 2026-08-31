@@ -1,0 +1,40 @@
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+
+[CreateAssetMenu(fileName = "NewCustomerData", menuName = "HerbProject/CustomerData")]
+// Data statis
+public class CustomerDataSO : ScriptableObject
+{
+    public string CustomerId;
+    public string CustomerName;
+    public AssetReferenceSprite CustomerPotraitRef;
+    public RecipeSO TargetRecipe;
+    public float MaxWaitDuration;
+
+    // Encapsulation of enum    
+    public enum CustomerType
+    {
+        Poor,
+        Middle,
+        Rich,
+    }
+
+    [SerializeField] private CustomerType _customerType;
+    public CustomerType CustType => _customerType;
+}
+
+// Data dinamis saat runtime, saat runtime ini akan dirun
+public class ActiveCustomerSession
+{
+    public CustomerDataSO Blueprint { get; }
+    public float RemainingWaitTime { get; set; }
+    public bool IsServed { get; set; }
+
+    // Constructor
+    public ActiveCustomerSession(CustomerDataSO blueprint)
+    {
+        Blueprint = blueprint;
+        RemainingWaitTime = blueprint.MaxWaitDuration;
+        IsServed = false;
+    }
+}

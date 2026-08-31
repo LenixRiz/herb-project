@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ad2b5279b36e824fab4619a49d3857f, type: 3}
+  m_Name: Cust_Lumine
+  m_EditorClassIdentifier: Assembly-CSharp::CustomerDataSO
+  CustomerId: 3
+  CustomerName: Lumine
+  CustomerPotraitRef:
+    m_AssetGUID: 3b6f73d5379da034f854c2ca3af4aa92
+    m_SubObjectName: lumine_0
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  TargetRecipe: {fileID: 11400000, guid: 5298c5f9a8803aa418a3c682ea915dd1, type: 2}
+  MaxWaitDuration: 80
+  _customerType: 2
