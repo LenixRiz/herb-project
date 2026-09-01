@@ -1,12 +1,15 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.iOS;
 using UnityEngine.UI;
 using static ShopManager;
 
 public class ShopUIController : MonoBehaviour
 {
     [Header("Dependencies")]
-    [SerializeField] private CashierController _cashier;
+    [SerializeField] private CashierController _cashierController;
+    [SerializeField] private CustomerSpawner _customerSpawner;
+    [SerializeField] private TimebarUI _timebarUI;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _moneyText;
@@ -16,42 +19,26 @@ public class ShopUIController : MonoBehaviour
     [SerializeField] private Button _diagnoseBtn;
     [SerializeField] private Button _craftBtn;
 
-    //private void OnEnable()
-    //{
-    //    // Subscribe
-    //    _cashier.OnCustomerServed += HandleServedCustomer;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    // Subscribe
-    //    _cashier.OnCustomerServed -= HandleServedCustomer;
-    //}
-
-    private void HandleServedCustomer(ServiceEvaluation evaluation)
+    private void OnEnable()
     {
-        var (name, isCorrect, moneyChange, repChange) = evaluation;
-
-        _moneyText.text = moneyChange.ToString();
-        _reputationText.text = repChange.ToString();
-
-        Debug.Log($"name: {name}, medication correct? {isCorrect}, moneyChange by +{moneyChange}, reputation change by {repChange}");
+        _customerSpawner.OnCustomerArrived += HandleCustomerArrived;
+        _cashierController.OnCustomerServed += HandleCustomerServed;
     }
 
-    [ContextMenu("Test UI Change")] // Quickly test a method without needing UI Component to trigger
-    private void TestOnUIChange()
+    private void OnDisable()
     {
-        ServiceEvaluation dummyData = new ServiceEvaluation("Aceng", true, +20, +5);
-        HandleServedCustomer(dummyData);
+        _customerSpawner.OnCustomerArrived -= HandleCustomerArrived;
+        _cashierController.OnCustomerServed -= HandleCustomerServed;
     }
 
-    private void OnDiagnoseClick()
+    public void HandleCustomerArrived(CustomerDataSO customerData)
     {
-
+        _timebarUI.SetTimebarDuration(customerData.MaxWaitDuration);
+        _timebarUI.StartTimebar();
     }
 
-    private void OnCraftClick()
+    public void HandleCustomerServed(bool isServed)
     {
-
+        _timebarUI.HandleTogglePanel(isServed);
     }
 }

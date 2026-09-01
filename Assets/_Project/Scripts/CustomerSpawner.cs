@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
+    public event System.Action<CustomerDataSO> OnCustomerArrived;
+
     [Header("Dependencies")]
     [SerializeField] private CustomerDatabaseSO _customerDatabase;
     [SerializeField] private GameObject _customerPrefab;
@@ -48,6 +50,9 @@ public class CustomerSpawner : MonoBehaviour
                 Debug.LogWarning("Current Customer Data is empty!");
                 yield break;
             }
+
+            // Notify any subscribers that a customer has arrived
+            OnCustomerArrived?.Invoke(currentCustomerData);
 
             // Create a new session for the current customer
             GameObject spawnedCustomer = Instantiate(_customerPrefab, transform.position, Quaternion.identity);
