@@ -169,3 +169,7 @@ Packages/packages-lock.json linguist-generated
 
 # Exceptions for .asset files such as lightning pre-baking
 LightingData.asset     binary
+
+# Abaikan shaderlab dari linguist
+*.shader linguist-documentation=true
+*.shadergraph linguist-documentation=true
