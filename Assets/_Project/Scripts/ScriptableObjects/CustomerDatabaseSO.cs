@@ -12,7 +12,7 @@ public class CustomerDatabaseSO : ScriptableObject
     // Inisialisasi untuk mengkaitkan id ke data jika data tersebut belum dikaitkan
     public void Initialize()
     {
-        _custLookup = new Dictionary<string, CustomerDataSO>(_allCustomers.Count);
+        _custLookup = new Dictionary<string, CustomerDataSO>(_allCustomers.Count); // Objek dictionary baru dengan kapasitas awal sesuai jumlah customer yang ada
 
         // Untuk setiap customer didalam semua customer
         foreach (var customer in _allCustomers)

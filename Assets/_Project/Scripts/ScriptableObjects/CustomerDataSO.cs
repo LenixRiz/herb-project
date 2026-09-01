@@ -23,18 +23,18 @@ public class CustomerDataSO : ScriptableObject
     public CustomerType CustType => _customerType;
 }
 
-// Data dinamis saat runtime, saat runtime ini akan dirun
-public class ActiveCustomerSession
-{
-    public CustomerDataSO Blueprint { get; }
-    public float RemainingWaitTime { get; set; }
-    public bool IsServed { get; set; }
+//// Data dinamis saat runtime, saat runtime ini akan dirun
+//public class ActiveCustomerSession
+//{
+//    public CustomerDataSO Blueprint { get; } // Get Data
+//    public float RemainingWaitTime { get; set; } // Wait Duration
+//    public bool IsServed { get; set; }
 
-    // Constructor
-    public ActiveCustomerSession(CustomerDataSO blueprint)
-    {
-        Blueprint = blueprint;
-        RemainingWaitTime = blueprint.MaxWaitDuration;
-        IsServed = false;
-    }
-}
+//    // Constructor
+//    public ActiveCustomerSession(CustomerDataSO blueprint)
+//    {
+//        Blueprint = blueprint;
+//        RemainingWaitTime = blueprint.MaxWaitDuration;
+//        IsServed = false;
+//    }
+//}

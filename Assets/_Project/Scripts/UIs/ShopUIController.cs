@@ -6,7 +6,7 @@ using static ShopManager;
 public class ShopUIController : MonoBehaviour
 {
     [Header("Dependencies")]
-    [SerializeField] private CashierCounter _cashier;
+    [SerializeField] private CashierController _cashier;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _moneyText;
@@ -16,17 +16,17 @@ public class ShopUIController : MonoBehaviour
     [SerializeField] private Button _diagnoseBtn;
     [SerializeField] private Button _craftBtn;
 
-    private void OnEnable()
-    {
-        // Subscribe
-        _cashier.OnCustomerServed += HandleServedCustomer;
-    }
+    //private void OnEnable()
+    //{
+    //    // Subscribe
+    //    _cashier.OnCustomerServed += HandleServedCustomer;
+    //}
 
-    private void OnDisable()
-    {
-        // Subscribe
-        _cashier.OnCustomerServed -= HandleServedCustomer;
-    }
+    //private void OnDisable()
+    //{
+    //    // Subscribe
+    //    _cashier.OnCustomerServed -= HandleServedCustomer;
+    //}
 
     private void HandleServedCustomer(ServiceEvaluation evaluation)
     {

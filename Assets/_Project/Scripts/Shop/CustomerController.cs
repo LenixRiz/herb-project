@@ -7,6 +7,8 @@ public class CustomerController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private AsyncOperationHandle<Sprite> _spriteLoadHandle;
 
+    private CashierController _cashierController;
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -14,7 +16,11 @@ public class CustomerController : MonoBehaviour
 
     public void ApplyConfig(CustomerDataSO customerData)
     {
-        if (customerData == null) return;
+        if (customerData == null)
+        {
+            Debug.LogWarning("Customer Data is empty!"); 
+            return;
+        }
 
         // Ambil sprite dari address secara asynchronus
         _spriteLoadHandle = customerData.CustomerPotraitRef.LoadAssetAsync<Sprite>();
@@ -31,9 +37,13 @@ public class CustomerController : MonoBehaviour
         Debug.Log($"{customerId} + {customerName} + {customerType} + {customerTargetRecipe} + {customerWaitDuration}");
     }
 
-    private void OnSpriteLoaded(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<Sprite> handle)
+    private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
     {
-        if (_spriteRenderer == null) return;
+        if (_spriteRenderer == null)
+        {
+            Debug.LogWarning("SpriteRenderer is null! Cannot apply sprite.");
+            return;
+        }    
 
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
@@ -46,8 +56,29 @@ public class CustomerController : MonoBehaviour
         }
     }
 
+    public void SetupCashierConnection(CashierController cashierController)
+    {
+        _cashierController = cashierController;
+        _cashierController.OnCustomerServed += HandleCustomerServed;
+    }
+
+    private void HandleCustomerServed(bool isServed)
+    {
+        if (isServed != true) return;
+
+        DespawnCustomer();
+
+        _cashierController.OnCustomerServed -= HandleCustomerServed;
+    }
+
+    private void DespawnCustomer()
+    {
+        Destroy(gameObject);
+    }
+
     private void OnDestroy()
     {
+        // Lepaskan resource addressable saat objek dihancurkan
         if (_spriteLoadHandle.IsValid())
         {
             Addressables.Release(_spriteLoadHandle);

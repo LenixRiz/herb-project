@@ -22,10 +22,12 @@ public class AudioManager : MonoBehaviour
 
     public void OnCustomerArrived()
     {
-        if (_onCustomerArrived != null)
+        if (_onCustomerArrived == null)
         {
-            audioSource.PlayOneShot(_onCustomerArrived);
+            Debug.LogWarning("Audio clip for customer arrival is not assigned.");
+            return;
         }
-    }
 
+        audioSource.PlayOneShot(_onCustomerArrived, .5f);
+    }
 }
