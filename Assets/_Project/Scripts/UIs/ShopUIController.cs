@@ -1,8 +1,6 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
 using UnityEngine.UI;
-using static ShopManager;
 
 public class ShopUIController : MonoBehaviour
 {
@@ -10,6 +8,7 @@ public class ShopUIController : MonoBehaviour
     [SerializeField] private CashierController _cashierController;
     [SerializeField] private CustomerSpawner _customerSpawner;
     [SerializeField] private TimebarUI _timebarUI;
+    private CustomerController _currentCustomer;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _moneyText;
@@ -27,19 +26,46 @@ public class ShopUIController : MonoBehaviour
 
     private void OnDisable()
     {
+        // Unsubscribe from events to prevent memory leaks when game is closed or scene is changed
         _customerSpawner.OnCustomerArrived -= HandleCustomerArrived;
         _cashierController.OnCustomerServed -= HandleCustomerServed;
+        _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
     }
 
-    public void HandleCustomerArrived(CustomerController customerData)
+    private void OnTimeUpdate(float durationRemaining)
     {
-        _timebarUI.SetTimebarDuration(customerData.WaitDuration);
-        _timebarUI.StartTimebar();
-        Debug.Log($"Customer arrived: {customerData.CustomerName}, Wait Duration: {customerData.WaitDuration}");
+        _timebarUI.SetDurationRemaining(durationRemaining);
     }
 
-    public void HandleCustomerServed(bool isServed)
+    private void HandleCustomerArrived(CustomerController customerData)
+    {
+        // Unsubscribe from the previous customer's time update event if there was a previous customer
+        if (_currentCustomer != null)
+        {
+            _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
+        }
+
+        _currentCustomer = customerData;
+
+        // Subscribe to new customer
+        if (_currentCustomer != null)
+        {
+            _currentCustomer.OnTimeUpdate += OnTimeUpdate;
+        }
+
+        _timebarUI.SetMaxDuration(_currentCustomer.WaitDuration);
+    }
+
+    private void HandleCustomerServed(bool isServed)
     {
         _timebarUI.SetTimebarVisibility(isServed);
+
+        // Unsubscribe after customer is served
+        if (isServed == true && _currentCustomer != null)
+        {
+            _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
+        }
+
+        // Note to self: always check for memory leak and prevent it with unsub-ing whenever the thing ends here and there
     }
 }

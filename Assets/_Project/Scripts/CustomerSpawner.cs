@@ -9,10 +9,13 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerDatabaseSO _customerDatabase;
     [SerializeField] private GameObject _customerPrefab;
     [SerializeField] private CashierController _cashierController;
-
+    [SerializeField] private ShopUIController _shopUIController;
+    
+    private CustomerController _currentController;
     private AudioManager _audioManager;
 
     private bool _isServed;
+    private bool _isEnded;
 
     private void OnEnable()
     {
@@ -22,6 +25,7 @@ public class CustomerSpawner : MonoBehaviour
     private void OnDisable()
     {
         _cashierController.OnCustomerServed -= HandleCustomerServed;
+        UnsubscribeCurrentCustomer();
     }
 
     private void Start()
@@ -33,7 +37,20 @@ public class CustomerSpawner : MonoBehaviour
     private void HandleCustomerServed(bool isServed)
     {
         _isServed = isServed;
-        Debug.Log($"Customer served status: {_isServed}");
+    }
+
+    private void HandleCustomerTimeEnded()
+    {
+        UnsubscribeCurrentCustomer();
+        _isEnded = true;
+    }
+
+    private void UnsubscribeCurrentCustomer()
+    {
+        if (_currentController != null)
+        {
+            _currentController.OnTimeEnd -= HandleCustomerTimeEnded;
+        }
     }
 
     private IEnumerator SpawnRandomCustomer()
@@ -41,6 +58,7 @@ public class CustomerSpawner : MonoBehaviour
         while (true)
         {
             _isServed = false; // Reset the served status for the next customer
+            _isEnded = false;
 
             // Take a random customer data from the database
             var currentCustomerData = _customerDatabase.GetRandomCustomer();
@@ -53,31 +71,32 @@ public class CustomerSpawner : MonoBehaviour
 
             // Create a new session for the current customer
             GameObject spawnedCustomer = Instantiate(_customerPrefab, transform.position, Quaternion.identity);
-            CustomerController controller = spawnedCustomer.GetComponent<CustomerController>();
+            _currentController = spawnedCustomer.GetComponent<CustomerController>();
 
-            if (controller != null)
+            if (_currentController != null)
             {
+                _currentController.OnTimeEnd += HandleCustomerTimeEnded;
+
                 // Send current data to CustomerController.cs
-                controller.ApplyConfig(currentCustomerData);
+                _currentController.ApplyConfig(currentCustomerData);
                 // Connect the cashier controller to the customer controller
-                controller.SetupCashierConnection(_cashierController);
-                Debug.Log("Current Customer Data sent to CustomerController!");
+                _currentController.SetupCashierConnection(_cashierController);
+                _currentController.SetupShopUIConnection(_shopUIController);
 
                 // Announce subscriber, so they can react and use the customer controller reference
-                OnCustomerArrived?.Invoke(controller);
+                OnCustomerArrived?.Invoke(_currentController);
             }
 
             if (_audioManager != null)
             {
                 _audioManager.OnCustomerArrived();
-                Debug.Log("Customer has arrived!");
             }
             else
             {
                 Debug.LogWarning("AudioManager is not assigned in CustomerSpawner!");
             }
 
-            yield return new WaitUntil(() => _isServed == true);
+            yield return new WaitUntil(() => _isServed == true || _isEnded == true);
 
             yield return new WaitForSecondsRealtime(2f);
         }

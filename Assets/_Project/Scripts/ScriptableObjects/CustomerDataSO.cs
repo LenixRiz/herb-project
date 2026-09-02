@@ -19,8 +19,16 @@ public class CustomerDataSO : ScriptableObject
         Rich,
     }
 
+    public enum CustomerOrderType
+    {
+        DirectOrder,
+        SymptomBasedOrder,
+    }
+
     [SerializeField] private CustomerType _customerType;
+    [SerializeField] private CustomerOrderType _customerOrderType;
     public CustomerType CustType => _customerType;
+    public CustomerOrderType CustOrderType => _customerOrderType;
 }
 
 //// Data dinamis saat runtime, saat runtime ini akan dirun

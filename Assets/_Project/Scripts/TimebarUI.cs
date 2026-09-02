@@ -1,46 +1,31 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TimebarUI : MonoBehaviour
 {
-    private System.Action<float> OnTimeUpdate;
-
+    [Header("Dependencies")]
     [SerializeField] private Image _timeBar;
     [SerializeField] private TextMeshProUGUI _testText;
     [SerializeField] private CanvasGroup _timeBarPanel;
 
     private float _maxDuration;
 
-    private Coroutine _currentTimerCoroutine;
-
-    private void OnEnable()
+    public void SetTimebarVisibility(bool isServed)
     {
-        ToggleTimebarUI(false); 
-
-        OnTimeUpdate += UpdateTimebarUI;
+        ToggleTimebarUI(!isServed); // false = show, true = hide
     }
 
-    private void OnDisable()
+    public void SetMaxDuration(float maxDuration)
     {
-        OnTimeUpdate -= UpdateTimebarUI;
+        _maxDuration = maxDuration;
     }
 
-    public void SetTimebarDuration(float customerMaxDuration)
+    public void SetDurationRemaining(float durationRemaining)
     {
-        _maxDuration = customerMaxDuration;
-    }
+        _testText.text = $"Time Remaining: {durationRemaining:F2} seconds";
 
-    public void StartTimebar()
-    {
-        if (_currentTimerCoroutine != null)
-        {
-            StopCoroutine(_currentTimerCoroutine);
-        }
-
-        _timeBar.fillAmount = 1f; // Reset the time bar to full then start the countdown
-        _currentTimerCoroutine = StartCoroutine(TimerCoroutine(_maxDuration));
+        UpdateTimebarUI(durationRemaining);
     }
 
     private void UpdateTimebarUI(float durationRemaining)   
@@ -53,28 +38,5 @@ public class TimebarUI : MonoBehaviour
         _timeBarPanel.alpha = isVisible ? 1 : 0;
         _timeBarPanel.interactable = isVisible;
         _timeBarPanel.blocksRaycasts = isVisible;
-    }
-
-    public void SetTimebarVisibility(bool isServed)
-    {
-        ToggleTimebarUI(!isServed); // false = show, true = hide
-    }
-
-    private IEnumerator TimerCoroutine(float durationRemaining)
-    { 
-        float sessionDurationRemaining = durationRemaining;
-        
-        while (sessionDurationRemaining > 0)
-        {
-            sessionDurationRemaining -= Time.deltaTime;
-
-            _testText.text = $"Time Remaining: {sessionDurationRemaining:F2} seconds";
-            OnTimeUpdate?.Invoke(sessionDurationRemaining);
-
-            yield return null;
-        }
-
-        _testText.text = "Time's Up!";
-        OnTimeUpdate?.Invoke(0f);
     }
 }
