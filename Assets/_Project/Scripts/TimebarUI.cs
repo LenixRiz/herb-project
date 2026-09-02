@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TimebarUI : MonoBehaviour
 {
-    private System.Action<float> OnTickUpdate;
+    private System.Action<float> OnTimeUpdate;
 
     [SerializeField] private Image _timeBar;
     [SerializeField] private TextMeshProUGUI _testText;
@@ -13,16 +13,18 @@ public class TimebarUI : MonoBehaviour
 
     private float _maxDuration;
 
+    private Coroutine _currentTimerCoroutine;
+
     private void OnEnable()
     {
-        HandleTogglePanel(false);
+        ToggleTimebarUI(false); 
 
-        OnTickUpdate += UpdateTimebarUI;
+        OnTimeUpdate += UpdateTimebarUI;
     }
 
     private void OnDisable()
     {
-        OnTickUpdate -= UpdateTimebarUI;
+        OnTimeUpdate -= UpdateTimebarUI;
     }
 
     public void SetTimebarDuration(float customerMaxDuration)
@@ -32,10 +34,16 @@ public class TimebarUI : MonoBehaviour
 
     public void StartTimebar()
     {
-        StartCoroutine(Timer(_maxDuration));
+        if (_currentTimerCoroutine != null)
+        {
+            StopCoroutine(_currentTimerCoroutine);
+        }
+
+        _timeBar.fillAmount = 1f; // Reset the time bar to full then start the countdown
+        _currentTimerCoroutine = StartCoroutine(TimerCoroutine(_maxDuration));
     }
 
-    private void UpdateTimebarUI(float durationRemaining)
+    private void UpdateTimebarUI(float durationRemaining)   
     {
         _timeBar.fillAmount = durationRemaining / _maxDuration; // ex: 30/60 = 0.5 or 50% fill
     }
@@ -47,44 +55,26 @@ public class TimebarUI : MonoBehaviour
         _timeBarPanel.blocksRaycasts = isVisible;
     }
 
-    public void HandleTogglePanel(bool isServed)
+    public void SetTimebarVisibility(bool isServed)
     {
-        ToggleTimebarUI(false);
-
-        switch (isServed)
-        {
-            case true:
-                ToggleTimebarUI(false);
-                break;
-            case false:
-                ToggleTimebarUI(true);
-                break;
-            default:
-        }
+        ToggleTimebarUI(!isServed); // false = show, true = hide
     }
 
-    private IEnumerator Timer(float durationRemaining)
-    {
-        yield return new WaitForSecondsRealtime(2f);
-
+    private IEnumerator TimerCoroutine(float durationRemaining)
+    { 
         float sessionDurationRemaining = durationRemaining;
         
         while (sessionDurationRemaining > 0)
         {
-            sessionDurationRemaining -= Time.unscaledDeltaTime;
+            sessionDurationRemaining -= Time.deltaTime;
 
             _testText.text = $"Time Remaining: {sessionDurationRemaining:F2} seconds";
-            OnTickUpdate?.Invoke(sessionDurationRemaining);
+            OnTimeUpdate?.Invoke(sessionDurationRemaining);
 
             yield return null;
         }
 
-        if (sessionDurationRemaining <= 0)
-        {
-            _testText.text = "Time's Up!";
-            OnTickUpdate?.Invoke(0f);
-            StopAllCoroutines();
-        }
+        _testText.text = "Time's Up!";
+        OnTimeUpdate?.Invoke(0f);
     }
-
 }

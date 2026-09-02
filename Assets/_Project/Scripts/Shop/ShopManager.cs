@@ -31,7 +31,19 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+    public static ShopManager Instance { get; private set; }
+
     [Header("Settings")]
     [SerializeField] private float _money = 100f;
     [SerializeField] private float _reputation = 5f;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 }

@@ -9,6 +9,10 @@ public class CustomerController : MonoBehaviour
 
     private CashierController _cashierController;
 
+    public string CustomerId { get; private set; }
+    public string CustomerName { get; private set; }
+    public float WaitDuration { get; private set; }
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -28,15 +32,16 @@ public class CustomerController : MonoBehaviour
         // Tunggu hingga loading selesai, dan umumkan
         _spriteLoadHandle.Completed += OnSpriteLoaded;
 
-        string customerId = customerData.CustomerId;
-        string customerName = customerData.CustomerName;
-        CustomerDataSO.CustomerType customerType = customerData.CustType;
-        var customerTargetRecipe = customerData.TargetRecipe;
-        float customerWaitDuration = Mathf.Clamp(Random.Range(customerData.MaxWaitDuration - 20f, customerData.MaxWaitDuration), 0, customerData.MaxWaitDuration);
+        // Disamble Customer Data
+        CustomerId = customerData.CustomerId;
+        CustomerName = customerData.CustomerName;
 
-        Debug.Log($"{customerId} + {customerName} + {customerType} + {customerTargetRecipe} + {customerWaitDuration}");
+        float randomDuration = customerData.MaxWaitDuration - Random.Range(10, 20);
+        WaitDuration = Mathf.Clamp(randomDuration, 0f, customerData.MaxWaitDuration);
+
+        Debug.Log($"Customer Duration {WaitDuration}");
     }
-
+    
     private void OnSpriteLoaded(AsyncOperationHandle<Sprite> handle)
     {
         if (_spriteRenderer == null)

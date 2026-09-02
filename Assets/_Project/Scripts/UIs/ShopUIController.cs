@@ -31,14 +31,15 @@ public class ShopUIController : MonoBehaviour
         _cashierController.OnCustomerServed -= HandleCustomerServed;
     }
 
-    public void HandleCustomerArrived(CustomerDataSO customerData)
+    public void HandleCustomerArrived(CustomerController customerData)
     {
-        _timebarUI.SetTimebarDuration(customerData.MaxWaitDuration);
+        _timebarUI.SetTimebarDuration(customerData.WaitDuration);
         _timebarUI.StartTimebar();
+        Debug.Log($"Customer arrived: {customerData.CustomerName}, Wait Duration: {customerData.WaitDuration}");
     }
 
     public void HandleCustomerServed(bool isServed)
     {
-        _timebarUI.HandleTogglePanel(isServed);
+        _timebarUI.SetTimebarVisibility(isServed);
     }
 }

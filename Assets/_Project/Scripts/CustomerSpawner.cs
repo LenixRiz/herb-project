@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
-    public event System.Action<CustomerDataSO> OnCustomerArrived;
+    public event System.Action<CustomerController> OnCustomerArrived;
 
     [Header("Dependencies")]
     [SerializeField] private CustomerDatabaseSO _customerDatabase;
@@ -38,9 +38,9 @@ public class CustomerSpawner : MonoBehaviour
 
     private IEnumerator SpawnRandomCustomer()
     {
-        do
+        while (true)
         {
-            yield return new WaitForSecondsRealtime(2f);
+            _isServed = false; // Reset the served status for the next customer
 
             // Take a random customer data from the database
             var currentCustomerData = _customerDatabase.GetRandomCustomer();
@@ -50,9 +50,6 @@ public class CustomerSpawner : MonoBehaviour
                 Debug.LogWarning("Current Customer Data is empty!");
                 yield break;
             }
-
-            // Notify any subscribers that a customer has arrived
-            OnCustomerArrived?.Invoke(currentCustomerData);
 
             // Create a new session for the current customer
             GameObject spawnedCustomer = Instantiate(_customerPrefab, transform.position, Quaternion.identity);
@@ -65,6 +62,9 @@ public class CustomerSpawner : MonoBehaviour
                 // Connect the cashier controller to the customer controller
                 controller.SetupCashierConnection(_cashierController);
                 Debug.Log("Current Customer Data sent to CustomerController!");
+
+                // Announce subscriber, so they can react and use the customer controller reference
+                OnCustomerArrived?.Invoke(controller);
             }
 
             if (_audioManager != null)
@@ -80,11 +80,6 @@ public class CustomerSpawner : MonoBehaviour
             yield return new WaitUntil(() => _isServed == true);
 
             yield return new WaitForSecondsRealtime(2f);
-
-            StartCoroutine(SpawnRandomCustomer());
-
-            _isServed = false; // Reset the served status for the next customer
         }
-        while (_isServed);
-    }
+    }   
 }
