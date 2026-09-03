@@ -14,6 +14,7 @@ public class TimebarUI : MonoBehaviour
     public void SetTimebarVisibility(bool isServed)
     {
         ToggleTimebarUI(!isServed); // false = show, true = hide
+        Debug.Log($"toggle timebar false = show, true = hide: { !isServed}");
     }
 
     public void SetMaxDuration(float maxDuration)

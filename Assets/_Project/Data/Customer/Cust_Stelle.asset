@@ -22,5 +22,6 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 1
   TargetRecipe: {fileID: 11400000, guid: 5298c5f9a8803aa418a3c682ea915dd1, type: 2}
-  MaxWaitDuration: 120
+  MaxWaitDuration: 30
   _customerType: 1
+  _customerOrderType: 0

@@ -179,6 +179,7 @@ MonoBehaviour:
   _customerDatabase: {fileID: 11400000, guid: eb6b8190cdf24124cabed777291378ce, type: 2}
   _customerPrefab: {fileID: 5460731111662550771, guid: 846db397dabf11a4eb1381c1ffe168c3, type: 3}
   _cashierController: {fileID: 1286402093}
+  _shopUIController: {fileID: 1619140263}
 --- !u!1 &185499999
 GameObject:
   m_ObjectHideFlags: 0

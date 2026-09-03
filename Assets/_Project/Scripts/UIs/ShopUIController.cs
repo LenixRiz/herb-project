@@ -43,6 +43,7 @@ public class ShopUIController : MonoBehaviour
         if (_currentCustomer != null)
         {
             _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
+            _currentCustomer.OnTimeEnd -= HandleCustomerTimeEnd;
         }
 
         _currentCustomer = customerData;
@@ -51,14 +52,21 @@ public class ShopUIController : MonoBehaviour
         if (_currentCustomer != null)
         {
             _currentCustomer.OnTimeUpdate += OnTimeUpdate;
+            _currentCustomer.OnTimeEnd += HandleCustomerTimeEnd;
         }
 
         _timebarUI.SetMaxDuration(_currentCustomer.WaitDuration);
+        _timebarUI.SetTimebarVisibility(false); // Show timebar
+    }
+
+    private void HandleCustomerTimeEnd()
+    {
+        _timebarUI.SetTimebarVisibility(true);
     }
 
     private void HandleCustomerServed(bool isServed)
     {
-        _timebarUI.SetTimebarVisibility(isServed);
+        _timebarUI.SetTimebarVisibility(isServed); // Should be true to hide timebar
 
         // Unsubscribe after customer is served
         if (isServed == true && _currentCustomer != null)

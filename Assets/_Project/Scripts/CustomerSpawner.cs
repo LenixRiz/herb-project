@@ -17,6 +17,17 @@ public class CustomerSpawner : MonoBehaviour
     private bool _isServed;
     private bool _isEnded;
 
+    public bool IsServed 
+    {   get
+        {
+            return _isServed; 
+        }
+        set
+        {
+            _isServed = value;
+        }
+    }
+
     private void OnEnable()
     {
         _cashierController.OnCustomerServed += HandleCustomerServed;

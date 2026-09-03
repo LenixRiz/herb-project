@@ -1,17 +1,22 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.U2D;
 
 public class CustomerController : MonoBehaviour
 {
     public event System.Action<float> OnTimeUpdate;
     public event System.Action OnTimeEnd;
+    public event System.Action <CustomerOrderType> OnOrder;
 
     private SpriteRenderer _spriteRenderer;
     private AsyncOperationHandle<Sprite> _spriteLoadHandle;
     private CashierController _cashierController;
     private ShopUIController _shopUIController;
+
+    private CustomerDataSO _customerData;
 
     public string CustomerId { get; private set; }
     public string CustomerName { get; private set; }
@@ -45,19 +50,22 @@ public class CustomerController : MonoBehaviour
             return;
         }
 
+        _customerData = customerData;
+        
         // Ambil sprite dari address secara asynchronus
-        _spriteLoadHandle = customerData.CustomerPotraitRef.LoadAssetAsync<Sprite>();
+        _spriteLoadHandle = _customerData.CustomerPotraitRef.LoadAssetAsync<Sprite>();
 
         // Tunggu hingga loading selesai, dan umumkan
         _spriteLoadHandle.Completed += OnSpriteLoaded;
 
         // Disamble Customer Data
-        CustomerId = customerData.CustomerId;
-        CustomerName = customerData.CustomerName;
+        CustomerId = _customerData.CustomerId;
+        CustomerName = _customerData.CustomerName;
 
-        float randomDuration = customerData.MaxWaitDuration - Random.Range(10, 20);
+        float randomDuration = _customerData.MaxWaitDuration - UnityEngine.Random.Range(10, 20);
         WaitDuration = Mathf.Clamp(randomDuration, 0f, customerData.MaxWaitDuration);
-        Debug.Log($"Customer {CustomerName} has a wait duration of {WaitDuration} seconds.");
+
+        GetOrderType();
 
         StartTimerCoroutine();
     }
@@ -84,6 +92,7 @@ public class CustomerController : MonoBehaviour
     public void SetupCashierConnection(CashierController cashierController)
     {
         _cashierController = cashierController;
+
         _cashierController.OnCustomerServed += OnCustomerServed;
     }
 
@@ -92,12 +101,46 @@ public class CustomerController : MonoBehaviour
         _shopUIController = shopUIController;
     }
 
+    private void GetOrderType()
+    {
+        if (_customerData == null) return;
+
+        CustomerOrderType orderType = GetRandomValue<CustomerOrderType>();
+
+        bool isEmpty = Enum.GetNames(typeof(CustomerOrderType)).Length == 0;
+
+        if (isEmpty) Debug.Log("Order Type is empty");
+
+        Debug.Log($"Customer {CustomerName} has a wait duration of {WaitDuration} seconds and order type of {orderType}.");
+
+        OnOrder?.Invoke(orderType);
+    }
+
+    private T GetRandomValue<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        int index = UnityEngine.Random.Range(0, values.Length);
+        return (T)values.GetValue(index);
+    }
+
     private void OnCustomerServed(bool isServed)
     {
-        if (_isServed != true) return;
+        if (_cashierController != null)
+        {
+            _cashierController.OnCustomerServed -= OnCustomerServed;
+        }
 
-        _isServed = isServed;
-        _cashierController.OnCustomerServed -= OnCustomerServed;
+        Debug.Log($"On Customer Served? {isServed}");
+
+        if (!isServed) return;
+
+        _isServed = true;
+
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
 
         DespawnCustomer();
     }
@@ -111,13 +154,21 @@ public class CustomerController : MonoBehaviour
 
     private void DespawnCustomer()
     {
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (_cashierController != null)
+        {
+            _cashierController.OnCustomerServed -= OnCustomerServed;
+        }
+
         // Lepaskan resource addressable saat objek dihancurkan
         if (_spriteLoadHandle.IsValid())
         {
             Addressables.Release(_spriteLoadHandle);
         }
-
-        Destroy(gameObject);
     }
 
     private IEnumerator Timer()

@@ -1,6 +1,19 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+public enum CustomerType
+{
+    Poor = 0,
+    Middle = 1,
+    Rich = 2,
+}
+
+public enum CustomerOrderType
+{
+    DirectOrder = 0,
+    SymptomBasedOrder = 1,
+}
+
 [CreateAssetMenu(fileName = "NewCustomerData", menuName = "HerbProject/CustomerData")]
 // Data statis
 public class CustomerDataSO : ScriptableObject
@@ -10,20 +23,6 @@ public class CustomerDataSO : ScriptableObject
     public AssetReferenceSprite CustomerPotraitRef;
     public RecipeSO TargetRecipe;
     public float MaxWaitDuration;
-
-    // Encapsulation of enum    
-    public enum CustomerType
-    {
-        Poor,
-        Middle,
-        Rich,
-    }
-
-    public enum CustomerOrderType
-    {
-        DirectOrder,
-        SymptomBasedOrder,
-    }
 
     [SerializeField] private CustomerType _customerType;
     [SerializeField] private CustomerOrderType _customerOrderType;

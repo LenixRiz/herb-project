@@ -1,13 +1,15 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CashierController : MonoBehaviour
 {
-    // Events
-    public event System.Action<bool> OnCustomerServed;
+    public System.Action<bool> OnCustomerServed;
 
     [Header("Dependencies")]
     private ShopManager _shopManager;
     [SerializeField] private CustomerSpawner _customerSpawner;
+
+    private bool _isServingCustomer;
 
     private void Awake()
     {
@@ -24,18 +26,21 @@ public class CashierController : MonoBehaviour
         _customerSpawner.OnCustomerArrived -= OnCustomerArrived;
     }
 
-    [ContextMenu("Begin Service")]
-    private void OnCustomerArrived(CustomerController customerData)
+    private void OnCustomerArrived(CustomerController customer)
     {
-        bool isServed = false;
-        OnCustomerServed?.Invoke(isServed);
+        _isServingCustomer = true;
     }
 
     [ContextMenu("Complete Service")]
     private void CompleteService()
     {
-        bool isServed = true;
-        OnCustomerServed?.Invoke(isServed);
+        if (!_isServingCustomer)
+        {
+            Debug.Log("No customer to serve right now");
+        }
+
+        bool isServed = true; // Hide timebar and continue the spawner
         Debug.Log("Complete Service Triggered");
+        OnCustomerServed?.Invoke(isServed);
     }
 }
