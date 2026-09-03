@@ -9,6 +9,7 @@ public class ShopUIController : MonoBehaviour
     [SerializeField] private CustomerSpawner _customerSpawner;
     [SerializeField] private TimebarUI _timebarUI;
     private CustomerController _currentCustomer;
+    private AudioManager _audioManager;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _moneyText;
@@ -17,6 +18,16 @@ public class ShopUIController : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button _diagnoseBtn;
     [SerializeField] private Button _craftBtn;
+
+    private void Awake()
+    {
+        _audioManager = AudioManager.Instance;
+
+        if (_audioManager == null )
+        {
+            Debug.LogWarning("AudioManager is not existing!");
+        }
+    }
 
     private void OnEnable()
     {
@@ -57,6 +68,11 @@ public class ShopUIController : MonoBehaviour
 
         _timebarUI.SetMaxDuration(_currentCustomer.WaitDuration);
         _timebarUI.SetTimebarVisibility(false); // Show timebar
+
+        if (_audioManager != null)
+        {
+            _audioManager.OnCustomerArrived();
+        }
     }
 
     private void HandleCustomerTimeEnd()

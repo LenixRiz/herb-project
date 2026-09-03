@@ -9,27 +9,33 @@ public class CustomerController : MonoBehaviour
 {
     public event System.Action<float> OnTimeUpdate;
     public event System.Action OnTimeEnd;
-    public event System.Action <CustomerOrderType> OnOrder;
 
     private SpriteRenderer _spriteRenderer;
     private AsyncOperationHandle<Sprite> _spriteLoadHandle;
     private CashierController _cashierController;
     private ShopUIController _shopUIController;
-
+    private AudioManager _audioManager;
     private CustomerDataSO _customerData;
 
     public string CustomerId { get; private set; }
     public string CustomerName { get; private set; }
     public float WaitDuration { get; private set; }
     public float RemainingWaitDuration { get; private set; }
+    public RecipeSO CustomerRecipe { get; private set; }
+    public CustomerOrderType OrderType { get; private set; }
 
     private bool _isServed;
-
     private Coroutine _timerCoroutine;
 
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _audioManager = AudioManager.Instance;
+
+        if (_audioManager == null)
+        {
+            Debug.LogWarning("AudioManager is not existing!");
+        }
     }
 
     private void StartTimerCoroutine()
@@ -61,6 +67,7 @@ public class CustomerController : MonoBehaviour
         // Disamble Customer Data
         CustomerId = _customerData.CustomerId;
         CustomerName = _customerData.CustomerName;
+        CustomerRecipe = _customerData.TargetRecipe;
 
         float randomDuration = _customerData.MaxWaitDuration - UnityEngine.Random.Range(10, 20);
         WaitDuration = Mathf.Clamp(randomDuration, 0f, customerData.MaxWaitDuration);
@@ -108,12 +115,11 @@ public class CustomerController : MonoBehaviour
         CustomerOrderType orderType = GetRandomValue<CustomerOrderType>();
 
         bool isEmpty = Enum.GetNames(typeof(CustomerOrderType)).Length == 0;
-
         if (isEmpty) Debug.Log("Order Type is empty");
 
         Debug.Log($"Customer {CustomerName} has a wait duration of {WaitDuration} seconds and order type of {orderType}.");
 
-        OnOrder?.Invoke(orderType);
+        OrderType = orderType;
     }
 
     private T GetRandomValue<T>() where T : Enum
@@ -147,6 +153,10 @@ public class CustomerController : MonoBehaviour
 
     private void OnTimeEnded()
     {
+        if (_audioManager != null)
+        {
+            _audioManager.OnCustomerAngry();
+        }
         Debug.Log("Customer's wait time has ended.");
         OnTimeEnd?.Invoke();
         DespawnCustomer();

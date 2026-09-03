@@ -26,8 +26,7 @@ public class CustomerDataSO : ScriptableObject
 
     [SerializeField] private CustomerType _customerType;
     [SerializeField] private CustomerOrderType _customerOrderType;
-    public CustomerType CustType => _customerType;
-    public CustomerOrderType CustOrderType => _customerOrderType;
+    public RecipeSO TargetRecipe2s => TargetRecipe;
 }
 
 //// Data dinamis saat runtime, saat runtime ini akan dirun

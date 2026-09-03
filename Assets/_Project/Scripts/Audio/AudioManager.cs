@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource audioSource;
     [Header("Clips")]
     [SerializeField] private AudioClip _onCustomerArrived;
+    [SerializeField] private AudioClip _onCustomerAngry;
 
     public void Awake()
     {
@@ -29,5 +30,16 @@ public class AudioManager : MonoBehaviour
         }
 
         audioSource.PlayOneShot(_onCustomerArrived, .5f);
+    }
+
+    public void OnCustomerAngry()
+    {
+        if (_onCustomerAngry == null)
+        {
+            Debug.LogWarning("Audio clip for angry customer is not assigned");
+            return;
+        }
+
+        audioSource.PlayOneShot(_onCustomerAngry);
     }
 }

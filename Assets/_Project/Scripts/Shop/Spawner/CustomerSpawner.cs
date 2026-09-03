@@ -10,9 +10,8 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private GameObject _customerPrefab;
     [SerializeField] private CashierController _cashierController;
     [SerializeField] private ShopUIController _shopUIController;
-    
+
     private CustomerController _currentController;
-    private AudioManager _audioManager;
 
     private bool _isServed;
     private bool _isEnded;
@@ -41,7 +40,6 @@ public class CustomerSpawner : MonoBehaviour
 
     private void Start()
     {
-        _audioManager = AudioManager.Instance;
         StartCoroutine(SpawnRandomCustomer());
     }
 
@@ -96,15 +94,6 @@ public class CustomerSpawner : MonoBehaviour
 
                 // Announce subscriber, so they can react and use the customer controller reference
                 OnCustomerArrived?.Invoke(_currentController);
-            }
-
-            if (_audioManager != null)
-            {
-                _audioManager.OnCustomerArrived();
-            }
-            else
-            {
-                Debug.LogWarning("AudioManager is not assigned in CustomerSpawner!");
             }
 
             yield return new WaitUntil(() => _isServed == true || _isEnded == true);
