@@ -4,8 +4,10 @@ using UnityEngine;
 public class DirectOrderUI : MonoBehaviour
 {
     [Header("Texts")]
-    [SerializeField] private TextMeshProUGUI _recipeNameText;
+    [SerializeField] private TextMeshProUGUI _recipeNameText; 
     [SerializeField] private TextMeshProUGUI[] _ingredientsText;
+
+    [SerializeField] private CanvasGroup _panel; [Tooltip("A Canvas Group")]
 
     public void UpdateRecipeNameUI(string recipeName)
     {
@@ -32,5 +34,23 @@ public class DirectOrderUI : MonoBehaviour
                 _ingredientsText[i].gameObject.SetActive(false); // Hide unused index ui
             }
         }
+    }
+
+    public void SetDirectOrderVisibility(bool toggle)
+    {
+        if (toggle)
+        {
+            ToggleDirectOrderUI(toggle);
+            return;
+        }
+
+        ToggleDirectOrderUI(false);
+    }
+
+    private void ToggleDirectOrderUI(bool isVisible)
+    {
+        _panel.alpha = isVisible ? 1 : 0;
+        _panel.interactable = isVisible;
+        _panel.blocksRaycasts = isVisible;
     }
 }

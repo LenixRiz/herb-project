@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.U2D;
 
@@ -24,7 +25,6 @@ public class CustomerController : MonoBehaviour
     public RecipeSO CustomerRecipe { get; private set; }
     public CustomerOrderType OrderType { get; private set; }
 
-    private bool _isServed;
     private Coroutine _timerCoroutine;
 
     private void Awake()
@@ -67,7 +67,6 @@ public class CustomerController : MonoBehaviour
         // Disamble Customer Data
         CustomerId = _customerData.CustomerId;
         CustomerName = _customerData.CustomerName;
-        CustomerRecipe = _customerData.TargetRecipe;
 
         float randomDuration = _customerData.MaxWaitDuration - UnityEngine.Random.Range(10, 20);
         WaitDuration = Mathf.Clamp(randomDuration, 0f, customerData.MaxWaitDuration);
@@ -96,6 +95,11 @@ public class CustomerController : MonoBehaviour
         }
     }
 
+    public void SetCustomerTargetRecipe(RecipeSO recipe)
+    { 
+        CustomerRecipe = recipe;
+    }
+
     public void SetupCashierConnection(CashierController cashierController)
     {
         _cashierController = cashierController;
@@ -122,6 +126,10 @@ public class CustomerController : MonoBehaviour
         OrderType = orderType;
     }
 
+    // Randomizing enum, by creating a method with return T (whatever ur enum name)
+    // Ensure T is enum by "where T : Enum". Then get all value inside of the enum
+    // Then randomize using Random.Range min of 0 and max according to the last values index
+    // Cast the type to the enum class end send the randomized index.
     private T GetRandomValue<T>() where T : Enum
     {
         Array values = Enum.GetValues(typeof(T));
@@ -139,8 +147,6 @@ public class CustomerController : MonoBehaviour
         Debug.Log($"On Customer Served? {isServed}");
 
         if (!isServed) return;
-
-        _isServed = true;
 
         if (_timerCoroutine != null)
         {

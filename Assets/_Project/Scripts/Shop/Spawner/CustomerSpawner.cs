@@ -10,6 +10,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private GameObject _customerPrefab;
     [SerializeField] private CashierController _cashierController;
     [SerializeField] private ShopUIController _shopUIController;
+    [SerializeField] private RecipeDatabaseSO _recipeDatabase;
 
     private CustomerController _currentController;
 
@@ -71,6 +72,7 @@ public class CustomerSpawner : MonoBehaviour
 
             // Take a random customer data from the database
             var currentCustomerData = _customerDatabase.GetRandomCustomer();
+            var targetRecipe = _recipeDatabase.GetRandomRecipe();
 
             if (currentCustomerData == null)
             {
@@ -88,6 +90,7 @@ public class CustomerSpawner : MonoBehaviour
 
                 // Send current data to CustomerController.cs
                 _currentController.ApplyConfig(currentCustomerData);
+                _currentController.SetCustomerTargetRecipe(targetRecipe);
                 // Connect the cashier controller to the customer controller
                 _currentController.SetupCashierConnection(_cashierController);
                 _currentController.SetupShopUIConnection(_shopUIController);

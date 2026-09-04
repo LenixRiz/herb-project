@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
@@ -33,9 +33,9 @@ public class ShopManager : MonoBehaviour
 
     public static ShopManager Instance { get; private set; }
 
-    [Header("Settings")]
-    [SerializeField] private float _money = 100f;
-    [SerializeField] private float _reputation = 5f;
+    //[Header("Settings")]
+    //[SerializeField] private float _money = 100f;
+    //[SerializeField] private float _reputation = 5f;
 
     private void Awake()
     {

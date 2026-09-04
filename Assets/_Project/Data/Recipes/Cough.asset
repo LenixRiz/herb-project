@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73086058a80272247af10a9e52ff1766, type: 3}
+  m_Name: Cough
+  m_EditorClassIdentifier: Assembly-CSharp::RecipeSO
+  recipeId: 1
+  MedicineName: Cough
+  MedicineIcon: {fileID: 0}
+  RequiredIngredients:
+  - {fileID: 11400000, guid: 3b64cba9a2505194aa8c1b91cbf9821e, type: 2}
+  - {fileID: 11400000, guid: e3a045da8931df445a684d1f2265d507, type: 2}
+  - {fileID: 11400000, guid: eb39b979f4536ab4bbd4352d02e0ddfe, type: 2}
+  SellPrice: 55
+  BaseReputationGain: 15

@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewRecipe", menuName = "HerbProject/Recipe")]
 public class RecipeSO : ScriptableObject
 {
+    public string recipeId;
     public string MedicineName;
     public Sprite MedicineIcon;
     public IngredientSO[] RequiredIngredients;

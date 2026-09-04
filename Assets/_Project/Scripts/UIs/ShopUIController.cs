@@ -7,9 +7,13 @@ public class ShopUIController : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private CashierController _cashierController;
     [SerializeField] private CustomerSpawner _customerSpawner;
-    [SerializeField] private TimebarUI _timebarUI;
+    [SerializeField] private OrderController _orderController;
     private CustomerController _currentCustomer;
     private AudioManager _audioManager;
+
+    [Header("UIs")]
+    [SerializeField] private TimebarUI _timebarUI;
+    [SerializeField] private DirectOrderUI _directOrderUI;
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI _moneyText;
@@ -78,11 +82,13 @@ public class ShopUIController : MonoBehaviour
     private void HandleCustomerTimeEnd()
     {
         _timebarUI.SetTimebarVisibility(true);
+        _directOrderUI.SetDirectOrderVisibility(false);
     }
 
     private void HandleCustomerServed(bool isServed)
     {
         _timebarUI.SetTimebarVisibility(isServed); // Should be true to hide timebar
+        _directOrderUI.SetDirectOrderVisibility(!isServed);
 
         // Unsubscribe after customer is served
         if (isServed == true && _currentCustomer != null)

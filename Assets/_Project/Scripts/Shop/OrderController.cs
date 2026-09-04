@@ -1,3 +1,4 @@
+using UnityEditorInternal;
 using UnityEngine;
 
 public class OrderController : MonoBehaviour
@@ -26,20 +27,45 @@ public class OrderController : MonoBehaviour
         _currentCustomer = currentCustomer;
 
         CustomerOrderType orderType = currentCustomer.OrderType;
-
-        RecipeSO currentRecipe = _currentCustomer.CustomerRecipe;
-        _recipeName = currentRecipe.name;
-        _directOrderUI.UpdateRecipeNameUI(_recipeName);
-
+        
         switch (orderType)
         {
             case CustomerOrderType.DirectOrder:
-                GetIngredientsFromRecipe(currentRecipe);
+                DirectOrder();
                 break;
             case CustomerOrderType.SymptomBasedOrder:
-                Debug.Log("Sakit jir");
+                SymptomBasedOrder();
                 break;
         }
+    }
+
+    #region order
+    private void DirectOrder()
+    {
+        DirectOrderUI directOrderUI = _directOrderUI;
+        if (_directOrderUI == null)
+        {
+            return;
+        }
+
+        RecipeSO currentRecipe = _currentCustomer.CustomerRecipe;
+        if (currentRecipe == null)
+        {
+            return;
+        }
+
+        _recipeName = currentRecipe.MedicineName;
+
+        _directOrderUI.UpdateRecipeNameUI(_recipeName);
+        _directOrderUI.SetDirectOrderVisibility(true);
+        GetIngredientsFromRecipe(currentRecipe);
+        
+    }
+    #endregion
+
+    private void SymptomBasedOrder()
+    {
+        _directOrderUI.SetDirectOrderVisibility(false);
     }
 
     private void GetIngredientsFromRecipe(RecipeSO currentRecipe)
