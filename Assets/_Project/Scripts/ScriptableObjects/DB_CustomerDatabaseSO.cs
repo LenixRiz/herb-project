@@ -18,7 +18,7 @@ public class CustomerDatabaseSO : ScriptableObject
         foreach (var customer in _allCustomers)
         {
             // Lakukan pengecakan apakah ada? apakah sudah punya Tkey yang terdaftar di dictionary?
-            if (customer != null && _custLookup.ContainsKey(customer.CustomerId))
+            if (customer != null && !_custLookup.ContainsKey(customer.CustomerId))
             {
                 // Jika benar, tambahkan id sesuai dalam data ke dictionary agar dapat dicari
                 _custLookup.Add(customer.CustomerId, customer);

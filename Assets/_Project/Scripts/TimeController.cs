@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class timecontroller : MonoBehaviour
+public class TimeController : MonoBehaviour
 {
     [Tooltip("How fast in-game time moves compared to real life. (e.g, 60 means 1x, 30 means 0.5x)")]
     [SerializeField] private float _timeMultiplier = 1f;

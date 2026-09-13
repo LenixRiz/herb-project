@@ -6,7 +6,7 @@ public class EnemyDataSO : ScriptableObject
     public string Name;
     public SpriteRenderer SpriteRenderer;
     public string Description;
-    public float HeatlhPoint;
+    public float MaxHealth;
     public float Damage;
     public float Speed;
 }

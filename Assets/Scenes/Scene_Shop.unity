@@ -2654,7 +2654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::timecontroller
   _timeMultiplier: 1
-  _totalSeconds: 0
+  _setStartingHours: 4
   _displayClockText: {fileID: 322083430}
 --- !u!1 &1683947867
 GameObject:

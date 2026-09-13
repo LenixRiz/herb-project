@@ -15,7 +15,7 @@ public class RecipeDatabaseSO : ScriptableObject
 
         foreach (var recipe in _allRecipes)
         {
-            if (recipe != null && _recipeLookup.ContainsKey(recipe.recipeId))
+            if (recipe != null && !_recipeLookup.ContainsKey(recipe.recipeId))
             {
                 _recipeLookup.Add(recipe.recipeId, recipe);
             }

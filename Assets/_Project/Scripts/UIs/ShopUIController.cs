@@ -44,7 +44,10 @@ public class ShopUIController : MonoBehaviour
         // Unsubscribe from events to prevent memory leaks when game is closed or scene is changed
         _customerSpawner.OnCustomerArrived -= HandleCustomerArrived;
         _cashierController.OnCustomerServed -= HandleCustomerServed;
-        _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
+        if (_currentCustomer != null)
+        {
+            _currentCustomer.OnTimeUpdate -= OnTimeUpdate;
+        }   
     }
 
     private void OnTimeUpdate(float durationRemaining)

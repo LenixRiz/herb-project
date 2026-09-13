@@ -37,6 +37,7 @@ public class CashierController : MonoBehaviour
         if (!_isServingCustomer)
         {
             Debug.Log("No customer to serve right now");
+            return;
         }
 
         bool isServed = true; // Hide timebar and continue the spawner
