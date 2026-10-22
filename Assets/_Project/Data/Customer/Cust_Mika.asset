@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad2b5279b36e824fab4619a49d3857f, type: 3}
   m_Name: Cust_Mika
   m_EditorClassIdentifier: Assembly-CSharp::CustomerDataSO
-  CustomerId: 1
-  CustomerName: Mika
-  CustomerPotraitRef:
+  _customerId: cust002
+  _customerName: Mika
+  _customerPotraitRef:
     m_AssetGUID: a064c1a5e00964c429f30b987a4ebf07
-    m_SubObjectName: mika_3
-    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_SubObjectName: 
+    m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  TargetRecipe: {fileID: 11400000, guid: 5298c5f9a8803aa418a3c682ea915dd1, type: 2}
-  MaxWaitDuration: 30
-  _customerType: 0
+  _customerDescription: School girl that need to be punished
+  _customerType: 1
   _customerOrderType: 0
+  _signatureOrder: {fileID: 0}
+  _maxWaitDuration: 0
