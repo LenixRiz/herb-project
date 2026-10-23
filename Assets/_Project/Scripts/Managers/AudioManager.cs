@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour
     [Header("Clips")]
     [SerializeField] private AudioClip _onCustomerArrived;
     [SerializeField] private AudioClip _onCustomerAngry;
+    [SerializeField] private AudioClip _onCustomerServed;
+    [SerializeField] private AudioClip _onGoldChange;
 
     private void Awake()
     {
@@ -25,12 +27,16 @@ public class AudioManager : MonoBehaviour
     {
         EventBus<CustomerArrivedEvent>.Subscribe(OnCustomerArrived);
         EventBus<CustomerAngryEvent>.Subscribe(OnCustomerAngry);
+        EventBus<CustomerServedEvent>.Subscribe(OnCustomerServed);
+        EventBus<GoldChangeEvent>.Subscribe(OnGoldChange);
     }
 
     private void OnDisable()
     {
         EventBus<CustomerArrivedEvent>.Unsubscribe(OnCustomerArrived);
         EventBus<CustomerAngryEvent>.Unsubscribe(OnCustomerAngry);
+        EventBus<CustomerServedEvent>.Unsubscribe(OnCustomerServed);
+        EventBus<GoldChangeEvent>.Unsubscribe(OnGoldChange);
     }
 
     private void OnCustomerArrived(CustomerArrivedEvent e)
@@ -53,5 +59,27 @@ public class AudioManager : MonoBehaviour
         }
 
         audioSource.PlayOneShot(_onCustomerAngry);
+    }
+
+    private void OnCustomerServed(CustomerServedEvent e)
+    {
+        if (_onCustomerServed == null)
+        {
+            Debug.LogWarning("Audio clip for customer served is not assigned");
+            return;
+        }
+
+        audioSource.PlayOneShot(_onCustomerServed);
+    }
+
+    private void OnGoldChange(GoldChangeEvent e)
+    {
+        if (_onCustomerServed == null)
+        {
+            Debug.LogWarning("Audio clip for customer served is not assigned");
+            return;
+        }
+
+        audioSource.PlayOneShot(_onGoldChange);
     }
 }

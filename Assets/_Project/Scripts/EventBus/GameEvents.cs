@@ -9,6 +9,11 @@ public readonly struct CustomerArrivedEvent
     }
 }
 
+public readonly struct CustomerServedEvent
+{
+    
+}
+
 public readonly struct CustomerAngryEvent
 {
     public readonly float Reputation;

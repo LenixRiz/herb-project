@@ -18,10 +18,12 @@ public class CustomerManager : MonoBehaviour
     [SerializeField] private float _minSpawnInterval = 5f; // Default 5 seconds
     [SerializeField] private float _maxSpawnInterval = 15f; // Default 15 seconds
 
-    private WaitForSeconds _spawnWait;
-    private GameObject _activeCustObject;
+    private float _spawnInterval;
+    private float _customerWaitDuration;
 
-    private bool _isServed;
+    private Coroutine _spawnerCoroutine;
+    private GameObject _activeCustObject;
+    private Customer _activeCustomer;
 
     #region Unity Lifecycle
     private void Awake()
@@ -36,33 +38,50 @@ public class CustomerManager : MonoBehaviour
 
     private void Start()
     {
-        _spawnWait = new WaitForSeconds(GetRandomSpawnInterval());
-
         _custRegistry.InitializeRegistry();
 
-        StartCoroutine(CustomerSpawnerCoroutine());
+        GetSpawnInterval();
+        _spawnerCoroutine = StartCoroutine(CustomerSpawnerCoroutine());
     }
     #endregion
+
+    [ContextMenu("Serve Customer")]
+    public void ServeCustomer()
+    {
+        if (_activeCustomer == null)
+        {
+            Debug.Log("[CustomerManager] No customer yet");
+            return;
+        }
+
+        Debug.Log("Serving...");
+        _activeCustomer.SetCustomerStatus(Customer.CustomerStatus.Served);
+        Debug.Log($"Customer Status: {_activeCustomer.GetCustomerStatus()}");
+
+        if (_activeCustomer.GetCustomerStatus() == Customer.CustomerStatus.Paid)
+        {
+            StartCoroutine(HandleCustomerDeparture(true));
+        }
+    }
 
     #region Customer Spawn
     private IEnumerator CustomerSpawnerCoroutine()
     {
-        var customer = GetRandomCustomerToSpawn();
-
         while (true)
         {
-            if (customer != null)
-            {
-                if (_isServed) yield return null;
+            yield return new WaitForSeconds(_spawnInterval);
 
-                yield return _spawnWait;
+            var customer = GetRandomCustomerToSpawn();
+            if (customer == null) continue;
 
-                SpawnCustomer(customer);
+            _customerWaitDuration = GetRandomTime(customer.MinWaitDuration, customer.MaxWaitDuration);
 
-                yield return _spawnWait;
+            SpawnCustomer(customer);
+            Debug.Log($"Customer Arrived: {customer.CustomerName} duration {_customerWaitDuration}");
 
-                DespawnCustomer();
-            }
+            yield return new WaitForSeconds(_customerWaitDuration);
+
+            DespawnCustomer();
         }
     }
 
@@ -80,25 +99,69 @@ public class CustomerManager : MonoBehaviour
 
     private void SpawnCustomer(CustomerDataSO customerData)
     {
-        _isServed = false;
         _activeCustObject = Instantiate(_custPrefab, transform.position, Quaternion.identity);
 
         if (_activeCustObject.TryGetComponent<Customer>(out var customer))
         {
-            customer.Initialize(customerData);
+            _activeCustomer = customer;
+            _activeCustomer.Initialize(customerData);
+            _activeCustomer.SetCustomerStatus(Customer.CustomerStatus.Serving);
+            Debug.Log($"Customer Status: {_activeCustomer.GetCustomerStatus()}");
         }
-
+    
         EventBus<CustomerArrivedEvent>.Publish(new CustomerArrivedEvent());
     }
 
     private void DespawnCustomer()
     {
-        Destroy(_activeCustObject);
+        if (_activeCustomer != null)
+        {
+            _activeCustomer.SetCustomerStatus(Customer.CustomerStatus.Unserved);
+            Debug.Log($"Customer Status: {_activeCustomer.GetCustomerStatus()}");
+        }
+
+        StartCoroutine(HandleCustomerDeparture(false));
     }
 
-    private float GetRandomSpawnInterval()
+    private void GetSpawnInterval()
     {
-        return UnityEngine.Random.Range(_minSpawnInterval, _maxSpawnInterval);
+        _spawnInterval = GetRandomTime(_minSpawnInterval, _maxSpawnInterval);
+        Debug.Log($"Next customer spawned in {_spawnInterval} seconds");
+    }
+
+    private IEnumerator HandleCustomerDeparture(bool served)
+    {
+        if (!served)
+        {
+            EventBus<CustomerAngryEvent>.Publish(new CustomerAngryEvent());
+            Debug.Log("You ran out of time and customer become angry");
+        }
+        else
+        {
+            EventBus<CustomerServedEvent>.Publish(new CustomerServedEvent());
+            Debug.Log("You served them well");
+        }
+
+        GetSpawnInterval();
+
+        if (_activeCustObject != null)
+        {
+            Destroy(_activeCustObject);
+        }
+        _activeCustomer = null;
+
+        if (_spawnerCoroutine != null)
+        {
+            StopCoroutine(_spawnerCoroutine);
+        }
+        _spawnerCoroutine = StartCoroutine(CustomerSpawnerCoroutine());
+
+        yield return null;
+    }
+
+    private float GetRandomTime(float _min, float _max)
+    {
+        return UnityEngine.Random.Range(_min, _max);
     }
     #endregion
 }

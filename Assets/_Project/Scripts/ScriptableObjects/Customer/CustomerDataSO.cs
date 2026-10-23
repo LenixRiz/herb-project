@@ -31,6 +31,7 @@ public class CustomerDataSO : IdentifiableSO
     [Header("Customer Order")]
     [Tooltip("Customer most ordered recipe")]
     [SerializeField] private RecipeSO _signatureOrder;
+    [SerializeField] private float _minWaitDuration;
     [SerializeField] private float _maxWaitDuration;
 
     public string CustomerName => _customerName;
@@ -39,5 +40,6 @@ public class CustomerDataSO : IdentifiableSO
     public CustomerType CustomerType => _customerType;
     public CustomerOrderType CustomerOrderType => _customerOrderType;
     public RecipeSO SignatureOrder => _signatureOrder;
+    public float MinWaitDuration => _minWaitDuration;
     public float MaxWaitDuration => _maxWaitDuration;
 }

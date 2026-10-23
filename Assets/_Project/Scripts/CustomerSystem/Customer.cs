@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -10,10 +11,8 @@ public class Customer : MonoBehaviour
     private AssetReferenceSprite _spriteRef;
     private CustomerDataSO _customer;
 
-    private GameTimer _patienceTimer = new GameTimer();
-
     // Customer Status
-    private enum CustomerStatus { Unserved, Serving, Served }
+    public enum CustomerStatus { Unserved, Serving, Served, Paid }
     private CustomerStatus _customerStatus = CustomerStatus.Unserved;
 
     // Cache Status
@@ -95,18 +94,38 @@ public class Customer : MonoBehaviour
     }
     #endregion
 
+    public void SetCustomerStatus(CustomerStatus status)
+    {
+        switch (status)
+        {
+            case CustomerStatus.Unserved:
+                _customerStatus = CustomerStatus.Unserved; break;
+            case CustomerStatus.Serving:
+                _customerStatus = CustomerStatus.Serving; break;
+            case CustomerStatus.Served:
+                _customerStatus = CustomerStatus.Served;
+                CustomerServed();
+                break;
+        }
+    }
+
+    public CustomerStatus GetCustomerStatus()
+    {
+        return _customerStatus;
+    }
+
     private void CustomerOrder()
     {
-        _patienceTimer.SetTimer(_customer.MaxWaitDuration);
-
-        _patienceTimer.Tick();
+        // To-do order related thing here
     }
 
     private void CustomerServed()
     {
-        if (_customerStatus != CustomerStatus.Unserved) return;
+        if (_customerStatus != CustomerStatus.Served) return;
 
         _customerStatus = CustomerStatus.Served;
+        Debug.Log("CUSTOMER SERVED AND PAY");
+
         CustomerPay(50, 2);
     }
 
@@ -115,8 +134,10 @@ public class Customer : MonoBehaviour
         if (_customerStatus == CustomerStatus.Served)
         {
             EventBus<GoldChangeEvent>.Publish(new GoldChangeEvent(totalIncome));
-
             EventBus<RepChangeEvent>.Publish(new RepChangeEvent(totalRepGain));
+            Debug.Log($"CUSTOMER PAID {totalIncome} gold and gain {totalRepGain} reputation");
+
+            _customerStatus = CustomerStatus.Paid;
         }
     }
 }

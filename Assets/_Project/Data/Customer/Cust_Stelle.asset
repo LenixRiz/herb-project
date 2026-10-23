@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad2b5279b36e824fab4619a49d3857f, type: 3}
   m_Name: Cust_Stelle
   m_EditorClassIdentifier: Assembly-CSharp::CustomerDataSO
-  _customerId: cust001
+  _id: herbproject:cust_stelle
   _customerName: Stelle
   _customerPotraitRef:
     m_AssetGUID: ba40c5a7fe658ba4b920860da4fdcb9d
-    m_SubObjectName: 
-    m_SubObjectType: 
+    m_SubObjectName: stelle_0
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   _customerDescription: Love trash and breaking the rules
   _customerType: 0
   _customerOrderType: 0
   _signatureOrder: {fileID: 0}
-  _maxWaitDuration: 30
+  _minWaitDuration: 5
+  _maxWaitDuration: 15
